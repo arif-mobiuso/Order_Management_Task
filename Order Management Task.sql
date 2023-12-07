@@ -1,0 +1,18 @@
+SELECT * from product
+
+
+ -- 1 
+select  PRODUCT_CLASS_CODE  , PRODUCT_ID , PRODUCT_DESC , PRODUCT_PRICE , 
+case PRODUCT_CLASS_CODE
+	when 2050 
+		then PRODUCT_PRICE+2000
+	when 2051
+		then PRODUCT_PRICE+500
+	when 2052 
+		then PRODUCT_PRICE+600
+	else 
+		PRODUCT_PRICE
+	end PRODUCT_PRICE 
+	from PRODUCT
+order by PRODUCT_CLASS_CODE desc
+
