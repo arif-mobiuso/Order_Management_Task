@@ -143,3 +143,29 @@ LIMIT 1 ;
 
 
 
+-- 6. Write a query to display the customer_id,customer name, email and order details (order id, product desc,product qty,
+--  subtotal(product_quantity * product_price)) for all customers even if they have not ordered any item.(225 ROWS) 
+--  [NOTE: TABLE TO BE USED - online_customer, order_header, order_items, product]
+
+
+
+-- solution 
+
+
+select ONLINE_CUSTOMER.CUSTOMER_ID ,
+		ONLINE_CUSTOMER.CUSTOMER_FNAME || " " || ONLINE_CUSTOMER.CUSTOMER_LNAME as Customer_FullName  ,
+		ONLINE_CUSTOMER.CUSTOMER_EMAIL , 
+		ORDER_HEADER.ORDER_ID , 
+		PRODUCT.PRODUCT_DESC ,
+		ORDER_ITEMS.PRODUCT_QUANTITY, 
+		ORDER_ITEMS.PRODUCT_QUANTITY * PRODUCT.PRODUCT_PRICE as SubTotal 
+FROM ONLINE_CUSTOMER
+		left join ORDER_HEADER on ORDER_HEADER.CUSTOMER_ID = ONLINE_CUSTOMER.CUSTOMER_ID
+		left join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
+		left join PRODUCT on product.PRODUCT_ID = ORDER_ITEMS.PRODUCT_ID
+		
+		
+
+
+
+
