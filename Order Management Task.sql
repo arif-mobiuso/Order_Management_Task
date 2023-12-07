@@ -80,3 +80,32 @@ SELECT COUNTRY , count (CITY) as Total_cities
 		   Country != "Malaysia" and 
 		   Total_cities > 1
 	order by CITY desc
+	
+	
+-- 	
+-- 4. Write a query to display the customer_id,customer full name ,city,pincode,and order details 
+-- (order id, product class desc, product desc, subtotal(product_quantity * product_price)) for orders shipped to
+--  cities whose pin codes do not have any 0s in them. Sort the output on customer name and subtotal. (52 ROWS) 
+--  [NOTE: TABLE TO BE USED - online_customer, address, order_header, order_items, product, product_class]
+
+
+-- solution 
+
+
+SELECT ONLINE_CUSTOMER.CUSTOMER_ID ,
+		ONLINE_CUSTOMER.CUSTOMER_FNAME || " " || ONLINE_CUSTOMER.CUSTOMER_LNAME as Customer_FullName  ,
+		ADDRESS.CITY ,
+		ADDRESS.PINCODE , 
+		ORDER_HEADER.ORDER_ID , 
+		PRODUCT_CLASS.PRODUCT_CLASS_DESC ,
+		PRODUCT.PRODUCT_DESC ,
+		ORDER_ITEMS.PRODUCT_QUANTITY * PRODUCT.PRODUCT_PRICE as SubTotal 
+from ONLINE_CUSTOMER 
+		join ADDRESS on ONLINE_CUSTOMER.ADDRESS_ID = ADDRESS.ADDRESS_ID
+		join ORDER_HEADER on ORDER_HEADER.CUSTOMER_ID = ONLINE_CUSTOMER.CUSTOMER_ID
+		join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
+		join PRODUCT on product.PRODUCT_ID = ORDER_ITEMS.PRODUCT_ID
+		join PRODUCT_CLASS on product.PRODUCT_CLASS_CODE = PRODUCT_CLASS.PRODUCT_CLASS_CODE
+where PINCODE not like "%0%" and 
+		ORDER_HEADER.ORDER_STATUS = "Shipped"
+order by Customer_FullName  , SubTotal
