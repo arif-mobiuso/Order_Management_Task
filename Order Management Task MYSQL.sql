@@ -41,6 +41,24 @@ having sum(order_items.product_quantity) > 10 ;
         
       
 
+-- 9. Write a query to display the order_id, customer id and customer full name of customers along with 
+-- (product_quantity) as total quantity of products shipped for order ids > 10060. (6 ROWS) 
+-- [NOTE: TABLES TO BE USED - online_customer, order_header, order_items]
+
+
+-- solution 
+
+
+select online_customer.customer_id , 
+		concat(ONLINE_CUSTOMER.CUSTOMER_FNAME , " " , ONLINE_CUSTOMER.CUSTOMER_LNAME) as Customer_FullName  ,
+		order_header.order_id , 
+        sum(order_items.product_quantity) as Total_Quantity 
+from online_customer
+        join ORDER_HEADER on ORDER_HEADER.CUSTOMER_ID = ONLINE_CUSTOMER.CUSTOMER_ID
+        join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
+where  order_header.order_status = "shipped"
+group by order_items.order_id
+having  order_header.order_id > 10060 ;
 
  
  
