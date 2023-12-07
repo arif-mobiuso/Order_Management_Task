@@ -109,3 +109,37 @@ from ONLINE_CUSTOMER
 where PINCODE not like "%0%" and 
 		ORDER_HEADER.ORDER_STATUS = "Shipped"
 order by Customer_FullName  , SubTotal
+
+
+
+-- 
+-- 5. Write a Query to display product id,product description,totalquantity(sum(product quantity) for an item which has been 
+-- bought maximum no. of times (Quantity Wise) along with product id 201. (USE SUB-QUERY) (1 ROW) [NOTE: ORDER_ITEMS TABLE, PRODUCT TABLE]
+
+
+
+-- solution
+
+
+
+-- Using joins 
+
+select PRODUCT.PRODUCT_ID  , PRODUCT.PRODUCT_DESC , sum(ORDER_ITEMS.PRODUCT_QUANTITY) as Total_Quantity
+from PRODUCT
+join ORDER_ITEMS  on ORDER_ITEMS.PRODUCT_ID =  PRODUCT.PRODUCT_ID
+group by PRODUCT.PRODUCT_ID
+order by Total_Quantity DESC limit 1 
+
+-- Using Sub-query
+
+SELECT  PRODUCT.PRODUCT_ID  ,
+		PRODUCT.PRODUCT_DESC  , 
+	   (select sum(ORDER_ITEMS.PRODUCT_QUANTITY)
+		from ORDER_ITEMS 
+		where ORDER_ITEMS.PRODUCT_ID = PRODUCT.PRODUCT_ID) as Total_Quantity
+from PRODUCT
+ORDER BY Total_Quantity DESC 
+LIMIT 1 ;
+
+
+
