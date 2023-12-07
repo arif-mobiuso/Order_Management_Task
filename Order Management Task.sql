@@ -64,3 +64,19 @@ case
 		on PRODUCT.PRODUCT_CLASS_CODE = PRODUCT_CLASS.PRODUCT_CLASS_CODE
 
 
+
+-- 3. Write a query to Show the count of cities in all countries other than USA & MALAYSIA, with more than 1 city, in the descending order of CITIES.
+--  (2 rows) [NOTE: ADDRESS TABLE, Do not use Distinct]
+
+
+
+-- solution 
+
+
+SELECT COUNTRY , count (CITY) as Total_cities
+	from ADDRESS
+	group by COUNTRY
+	HAVING country != "USA" and 
+		   Country != "Malaysia" and 
+		   Total_cities > 1
+	order by CITY desc
