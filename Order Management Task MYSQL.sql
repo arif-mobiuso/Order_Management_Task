@@ -60,5 +60,31 @@ where  order_header.order_status = "shipped"
 group by order_items.order_id
 having  order_header.order_id > 10060 ;
 
+
+
+
+-- 10. Write a query to display product calss  description ,total quantity (sum(product_quantity),
+-- Total value (product_quantity * product price) and show which class of products have been shipped
+--  highest(Quantity) to countries outside India other than USA? Also show the total value of those 
+--  items. (1 ROWS)[NOTE:PRODUCT TABLE,ADDRESS TABLE,ONLINE_CUSTOMER TABLE,ORDER_HEADER TABLE,ORDER_ITEMS 
+--  TABLE,PRODUCT_CLASS TABLE]
+
+
+-- solution 
+
+
+select PRODUCT_CLASS.product_class_desc,
+		sum(order_items.product_quantity) as Total_Quantity , 
+        sum(order_items.product_quantity * product.product_price)as Total_Value
+from online_customer
+        join ADDRESS on ONLINE_CUSTOMER.ADDRESS_ID = ADDRESS.ADDRESS_ID
+		join ORDER_HEADER on ORDER_HEADER.CUSTOMER_ID = ONLINE_CUSTOMER.CUSTOMER_ID
+		join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
+		join PRODUCT on product.PRODUCT_ID = ORDER_ITEMS.PRODUCT_ID
+		join PRODUCT_CLASS on product.PRODUCT_CLASS_CODE = PRODUCT_CLASS.PRODUCT_CLASS_CODE
+where country not in ('india' , 'USA') 
+group by PRODUCT_CLASS.PRODUCT_CLASS_CODE
+order by Total_Quantity desc 
+limit 1 
  
  
