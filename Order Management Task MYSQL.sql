@@ -84,7 +84,6 @@ from online_customer
 		join PRODUCT_CLASS on product.PRODUCT_CLASS_CODE = PRODUCT_CLASS.PRODUCT_CLASS_CODE
 where country not in ('india' , 'USA') 
 group by PRODUCT_CLASS.PRODUCT_CLASS_CODE
-order by Total_Quantity desc 
-limit 1 
+order by Total_Quantity desc limit 1 
  
  
