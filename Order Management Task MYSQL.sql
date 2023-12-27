@@ -7,7 +7,7 @@
 -- solution 
 
 
-select  PRODUCT_CLASS_CODE  , PRODUCT_ID , PRODUCT_DESC , PRODUCT_PRICE , 
+select  PRODUCT_CLASS_CODE  , PRODUCT_ID , PRODUCT_DESC ,  
 case PRODUCT_CLASS_CODE
 	when 2050 
 		then PRODUCT_PRICE+2000
@@ -39,8 +39,10 @@ order by PRODUCT_CLASS_CODE desc ;
 
 SELECT PRODUCT_CLASS_DESC , PRODUCT_ID , PRODUCT_DESC  , PRODUCT_QUANTITY_AVAIL , 
 case 
-	when 
-		  PRODUCT_CLASS_DESC =  'Electronics'  or  PRODUCT_CLASS_DESC = 'Computer'
+	when  PRODUCT_QUANTITY_AVAIL = 0 then "out of stock"
+else
+    case 
+	when PRODUCT_CLASS_DESC =  'Electronics'  or  PRODUCT_CLASS_DESC = 'Computer'
 	then case 
 			when PRODUCT_QUANTITY_AVAIL <= 10 then "Low Stock"
 			when PRODUCT_QUANTITY_AVAIL >= 11 and PRODUCT_QUANTITY_AVAIL <= 30 then "In Stock"
@@ -59,6 +61,7 @@ case
 			when  PRODUCT_QUANTITY_AVAIL >= 16 and PRODUCT_QUANTITY_AVAIL <= 50 then "In Stock"
 			when PRODUCT_QUANTITY_AVAIL >= 51 then "Enough Stock"
 			END
+		END
 	END status
 		FROM PRODUCT 
 		JOIN PRODUCT_CLASS
@@ -138,9 +141,13 @@ SELECT  PRODUCT.PRODUCT_ID  ,
 		PRODUCT.PRODUCT_DESC  , 
 	   (select sum(ORDER_ITEMS.PRODUCT_QUANTITY)
 		from ORDER_ITEMS 
-		where ORDER_ITEMS.PRODUCT_ID = PRODUCT.PRODUCT_ID) as Total_Quantity
+		where ORDER_ITEMS.PRODUCT_ID = PRODUCT.PRODUCT_ID
+        and ORDER_ITEMS.ORDER_ID IN (
+				SELECT ORDER_ID 
+				FROM ORDER_ITEMS
+				WHERE PRODUCT_ID = 201
+			)) as Total_Quantity
 from PRODUCT
-where  PRODUCT.PRODUCT_ID   = 201
 ORDER BY Total_Quantity DESC 
 LIMIT 1 ;
 
@@ -184,8 +191,7 @@ from carton
 where (len*Width* height)  >= (select sum(product.len * product.width * product.height*order_items.PRODUCT_QUANTITY) as  Product_volume 
 							  from product 
 							  join order_items on order_items.PRODUCT_ID = product.PRODUCT_ID
-							  where order_id = 10006
-							  group by order_items.order_id)
+							  where order_id = 10006)
 order by carton_vol asc 
 limit 1 ; 
 
@@ -207,7 +213,7 @@ from online_customer
         join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
 where  order_header.order_status = "shipped"
 group by order_items.order_id
-having sum(order_items.product_quantity) > 10 ;
+having Total_Quantity > 10 ;
         
         
       
@@ -227,9 +233,8 @@ select online_customer.customer_id ,
 from online_customer
         join ORDER_HEADER on ORDER_HEADER.CUSTOMER_ID = ONLINE_CUSTOMER.CUSTOMER_ID
         join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
-where  order_header.order_status = "shipped"
-group by order_items.order_id
-having  order_header.order_id > 10060 ;
+where  order_header.order_status = "shipped" and order_header.order_id > 10060
+group by order_items.order_id;
 
 
 
@@ -253,9 +258,9 @@ from online_customer
 		join ORDER_ITEMS on ORDER_ITEMS.ORDER_ID = ORDER_HEADER.ORDER_ID
 		join PRODUCT on product.PRODUCT_ID = ORDER_ITEMS.PRODUCT_ID
 		join PRODUCT_CLASS on product.PRODUCT_CLASS_CODE = PRODUCT_CLASS.PRODUCT_CLASS_CODE
-where country not in ('india' , 'USA') 
+where country != 'india' and country !=  'USA' 
 group by PRODUCT_CLASS.PRODUCT_CLASS_CODE
 order by Total_Quantity desc 
 limit 1  ; 
- 
+
  
